@@ -1,14 +1,14 @@
 import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
-import { UserNotFoundException } from '../exceptions/user-not-found.exception';
+import { WishlistNotFoundException } from '../exceptions/wishlist-not-found.exception';
 
 @Catch()
-export class UserNotFoundExceptionFilter implements ExceptionFilter {
-  catch(exception: UserNotFoundException, host: ArgumentsHost) {
+export class WishlistNotFoundExceptionFilter implements ExceptionFilter {
+  catch(exception: WishlistNotFoundException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
     const request = ctx.getRequest();
     const status = exception.getStatus() || 400;
-    const message = exception.getResponse() || 'User not found';
+    const message = exception.getResponse() || 'Wishlist not found';
     response.status(status).json({
       status,
       message,

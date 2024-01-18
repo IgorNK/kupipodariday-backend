@@ -8,14 +8,12 @@ export class UserExistsExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse();
     const request = ctx.getRequest();
     const status = exception.getStatus() || 400;
-    const message = exception.getResponse() || "User already exists";
-    response
-      .status(status)
-      .json({ 
-        status,
-        message,
-        method: request.method,
-        url: request.url,
-      });
+    const message = exception.getResponse() || 'User already exists';
+    response.status(status).json({
+      status,
+      message,
+      method: request.method,
+      url: request.url,
+    });
   }
 }

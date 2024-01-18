@@ -2,34 +2,35 @@ import {
   IsNotEmpty,
   IsString,
   IsNumber,
-  IsArray,
   IsEmail,
   IsUrl,
   IsDate,
   IsOptional,
+  IsArray,
   Min,
   Length,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { UserPublicProfileResponseDto } from '../../users/dto/user-public-profile-response.dto';
 import { Offer } from '../../offers/entities/offer.entity';
 
-export class UserWishesDto {
+export class WishDto {
   @IsNumber()
   @IsNotEmpty()
   @ApiProperty({
     description: 'Item ID',
-    example: 1,
+    example: '1',
   })
   id: number;
 
-  @IsString()
-  @IsNotEmpty()
   @IsDate()
+  @IsNotEmpty()
+  @ApiProperty()
   createdAt: Date;
 
-  @IsString()
-  @IsNotEmpty()
   @IsDate()
+  @IsNotEmpty()
+  @ApiProperty()
   updatedAt: Date;
 
   @IsString()
@@ -70,19 +71,12 @@ export class UserWishesDto {
 
   @IsNumber()
   @IsNotEmpty()
-  @ApiProperty({
-    description: 'How much the item raised',
-    example: '100',
-  })
+  @ApiProperty()
   raised: number;
 
-  @IsNumber()
   @IsNotEmpty()
-  @ApiProperty({
-    description: 'How much the item was copied',
-    example: '100',
-  })
-  copied: number;
+  @ApiProperty()
+  owner: UserPublicProfileResponseDto;
 
   @IsString()
   @IsNotEmpty()
@@ -94,8 +88,10 @@ export class UserWishesDto {
   description: string;
 
   @IsArray()
-  @ApiProperty({
-    description: 'Offers featuring item',
-  })
+  @ApiProperty()
   offers: Offer[];
+
+  @IsNumber()
+  @ApiProperty()
+  copied: number;
 }

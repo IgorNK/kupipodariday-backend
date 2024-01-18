@@ -1,4 +1,14 @@
-import { IsNotEmpty, IsString, IsNumber, IsEmail, IsUrl, IsDate, IsOptional, Min, Length } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsString,
+  IsNumber,
+  IsEmail,
+  IsUrl,
+  IsDate,
+  IsOptional,
+  Min,
+  Length,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateWishDto {
@@ -33,7 +43,7 @@ export class CreateWishDto {
   @IsNotEmpty()
   @Min(1)
   @ApiProperty({
-    description: 'The item\'s price',
+    description: "The item's price",
     example: '100',
   })
   price: number;
@@ -42,7 +52,7 @@ export class CreateWishDto {
   @IsNotEmpty()
   @Length(1, 1024)
   @ApiProperty({
-    description: 'The item\'s description',
+    description: "The item's description",
     example: 'About item',
   })
   description: string;

@@ -1,4 +1,13 @@
-import { IsNotEmpty, IsString, IsNumber, IsEmail, IsUrl, IsDate, IsOptional, Length } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsString,
+  IsNumber,
+  IsEmail,
+  IsUrl,
+  IsDate,
+  IsOptional,
+  Length,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class FindUsersDto {

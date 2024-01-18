@@ -1,4 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 import { Min } from 'class-validator';
 import { User } from '../../users/entities/user.entity';
 import { Wish } from '../../wishes/entities/wish.entity';
@@ -14,15 +21,13 @@ export class Offer {
   @Column()
   updatedAt: Date;
 
-  @Column()
   @ManyToOne(() => User, (user) => user.offers)
   user: User;
 
-  @Column()
   @ManyToOne(() => Wish, (wish) => wish.offers)
   item: Wish;
 
-  @Column("decimal", { precision: 10, scale: 2 })
+  @Column('decimal', { precision: 10, scale: 2 })
   @Min(1)
   amount: number;
 

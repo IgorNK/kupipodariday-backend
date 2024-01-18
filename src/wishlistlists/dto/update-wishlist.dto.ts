@@ -1,7 +1,19 @@
-import { IsNotEmpty, IsString, IsNumber, IsEmail, IsUrl, IsDate, IsArray, IsOptional, Min, Length } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsString,
+  IsNumber,
+  IsEmail,
+  IsUrl,
+  IsDate,
+  IsArray,
+  IsOptional,
+  Min,
+  Length,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateWishlistDto {
+export class UpdateWishlistDto {
+  @IsOptional()
   @IsString()
   @IsNotEmpty()
   @Length(1, 250)
@@ -11,6 +23,7 @@ export class CreateWishlistDto {
   })
   name: string;
 
+  @IsOptional()
   @IsString()
   @IsNotEmpty()
   @IsUrl()
@@ -20,6 +33,7 @@ export class CreateWishlistDto {
   })
   image: string;
 
+  @IsOptional()
   @IsArray()
   @IsNotEmpty()
   @ApiProperty({

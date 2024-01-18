@@ -13,14 +13,16 @@ import { UsersModule } from './users/users.module';
 import { getTypeOrmModuleOptions } from '../ormconfig';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { WishesModule } from './wishes/wishes.module';
-import { WishlistsModule } from './wishlists/wishlists.module';
+import { WishlistsModule } from './wishlistlists/wishlists.module';
 import { OffersModule } from './offers/offers.module';
 import { AuthModule } from './auth/auth.module';
 
 const configSchema = Joi.object({
   port: Joi.number().integer().default(3000),
   database: Joi.object({
-    host: Joi.string().pattern(/postgres:\/\/[a-zA-Z]/).required(),
+    host: Joi.string()
+      .pattern(/postgres:\/\/[a-zA-Z]/)
+      .required(),
     name: Joi.string().required(),
     username: Joi.string().required(),
     password: Joi.string().required(),
@@ -30,10 +32,12 @@ const configSchema = Joi.object({
 
 @Module({
   imports: [
-    ThrottlerModule.forRoot([{
-      ttl: 60,
-      limit: 10,
-    }]),
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60,
+        limit: 10,
+      },
+    ]),
     WinstonModule.forRoot({
       levels: {
         critical_error: 0,
@@ -55,7 +59,7 @@ const configSchema = Joi.object({
     }),
     ConfigModule.forRoot({
       validationSchema: configSchema,
-      load: [configuration]
+      load: [configuration],
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -73,9 +77,9 @@ const configSchema = Joi.object({
   providers: [
     {
       provide: APP_GUARD,
-      useClass: ThrottlerGuard
+      useClass: ThrottlerGuard,
     },
-    AppService
+    AppService,
   ],
 })
 export class AppModule {}

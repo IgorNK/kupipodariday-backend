@@ -1,34 +1,49 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Header,
+  UseFilters,
+  UseInterceptors,
+} from '@nestjs/common';
 import { OffersService } from './offers.service';
 import { CreateOfferDto } from './dto/create-offer.dto';
-import { UpdateOfferDto } from './dto/update-offer.dto';
+import { OfferNotFoundExceptionFilter } from './filters/offer-not-found.filter';
+import { CacheInterceptor, CacheKey, CacheTTL } from '@nestjs/cache-manager';
+import { SkipThrottle } from '@nestjs/throttler';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('offers')
+@ApiTags('offers')
+@UseInterceptors(CacheInterceptor)
+@SkipThrottle()
+@UseFilters(OfferNotFoundExceptionFilter)
 export class OffersController {
   constructor(private readonly offersService: OffersService) {}
 
+  @CacheKey('offers')
+  @CacheTTL(3600)
+  @Header('Cache-Control', 'no-cache, max-age=3600')
   @Post()
   create(@Body() createOfferDto: CreateOfferDto) {
     return this.offersService.create(createOfferDto);
   }
 
+  @CacheKey('offers')
+  @CacheTTL(3600)
+  @Header('Cache-Control', 'no-cache, max-age=3600')
   @Get()
   findAll() {
     return this.offersService.findAll();
   }
 
+  @CacheKey('offers')
+  @CacheTTL(3600)
+  @Header('Cache-Control', 'no-cache, max-age=3600')
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.offersService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateOfferDto: UpdateOfferDto) {
-    return this.offersService.update(+id, updateOfferDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.offersService.remove(+id);
   }
 }
