@@ -1,8 +1,15 @@
 import { IsNotEmpty, IsString, IsNumber, IsEmail, IsUrl, IsDate, IsOptional, Length } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class UpdateUserDto {
-  @IsOptional()
+export class UserPublicProfileResponseDto {
+  @IsNumber()
+  @IsNotEmpty()
+  @ApiProperty({
+    description: 'User ID',
+    example: 1,
+  })
+  id: number;
+
   @IsString()
   @IsNotEmpty()
   @Length(2, 30)
@@ -12,7 +19,6 @@ export class UpdateUserDto {
   })
   username: string;
 
-  @IsOptional()
   @IsString()
   @IsNotEmpty()
   @Length(2, 200)
@@ -22,7 +28,6 @@ export class UpdateUserDto {
   })
   about: string;
 
-  @IsOptional()
   @IsString()
   @IsNotEmpty()
   @IsUrl()
@@ -32,22 +37,13 @@ export class UpdateUserDto {
   })
   avatar: string;
 
-  @IsOptional()
   @IsString()
   @IsNotEmpty()
-  @IsEmail()
-  @ApiProperty({
-    description: 'The user\'s email',
-    example: 'johndoe@example.com',
-  })
-  email: string;
+  @IsDate()
+  createdAt: Date;
 
-  @IsOptional()
   @IsString()
   @IsNotEmpty()
-  @ApiProperty({
-    description: 'The user\'s password',
-    example: 'derpassword',
-  })
-  password: string;
+  @IsDate()
+  updatedAt: Date;
 }

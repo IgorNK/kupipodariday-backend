@@ -3,7 +3,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { WinstonModule } from 'nest-winston';
 import * as winston from 'winston';
 import 'winston-daily-rotate-file';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import configuration from './app.configuration';
 import * as Joi from 'joi';
 import { AppController } from './app.controller';
@@ -12,6 +12,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { getTypeOrmModuleOptions } from '../ormconfig';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { WishesModule } from './wishes/wishes.module';
+import { WishlistsModule } from './wishlists/wishlists.module';
+import { OffersModule } from './offers/offers.module';
+import { AuthModule } from './auth/auth.module';
 
 const configSchema = Joi.object({
   port: Joi.number().integer().default(3000),
@@ -55,12 +59,15 @@ const configSchema = Joi.object({
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
+      useFactory: () => ({
         ...getTypeOrmModuleOptions(),
       }),
     }),
     UsersModule,
+    WishesModule,
+    WishlistsModule,
+    OffersModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [
