@@ -11,7 +11,6 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { WishesService } from './wishes.service';
-import { WishDto } from './dto/wish.dto';
 import { CreateWishDto } from './dto/create-wish.dto';
 import { UpdateWishDto } from './dto/update-wish.dto';
 import { Wish } from './entities/wish.entity';
@@ -57,7 +56,7 @@ export class WishesController {
   @CacheTTL(3600)
   @Header('Cache-Control', 'no-cache, max-age=3600')
   @Header('Content-Type', 'application/json')
-  @ApiResponse({ status: 200, description: 'Wish object', type: WishDto })
+  @ApiResponse({ status: 200, description: 'Wish entity', type: Wish })
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<Wish> {
     return await this.wishesService.findOne(+id);

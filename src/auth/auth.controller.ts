@@ -1,23 +1,33 @@
-import { Controller, UseFilters, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Req } from '@nestjs/common';
+import { UsersService } from '../users/users.service';
 import { AuthService } from './auth.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UserExistsExceptionFilter } from './filters/user-exists.filter';
-import { User } from '../users/entities/user.entity';
-import { ApiTags } from '@nestjs/swagger';
+import { LocalGuard } from '../guards/local.guard';
+import { CreateUserDto } from '../users/dto/create-user.dto';
+import { SigninUserDto } from '../users/dto/sign-in-user.dto';
+import { SigninUserResponseDto } from '../users/dto/sign-in-user-response.dto'
+import { SignupUserResponseDto } from '../users/dto/sign-up-user-response.dto'
 
-@UseFilters(UserExistsExceptionFilter)
-@ApiTags('auth')
 @Controller('')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
-
-  @Post('signup')
-  async create(@Body() createUserDto: CreateUserDto): Promise<User> {
-    return this.authService.create(createUserDto);
-  }
+  constructor(
+    private usersService: UsersService,
+    private authService: AuthService,
+  ) {}
 
   @Post('signin')
-  async signin() {
-    return `This action signs you in`;
+  async signin(@Body() body: SigninUserDto): Promise<SigninUserResponseDto> {
+    return this.authService.signin(body);
+  }
+
+  /*@UseGuards(LocalGuard)
+  @Post('signin')
+  async signin(@Req() req): Promise<SigninUserResponseDto> {
+    return this.authService.auth(req.user);
+  }*/
+  
+
+  @Post('signup')
+  async signup(@Body() createUserDto: CreateUserDto): Promise<SignupUserResponseDto> {
+    return this.usersService.create(createUserDto);
   }
 }

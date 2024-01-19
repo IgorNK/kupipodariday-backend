@@ -3,9 +3,8 @@ import { APP_GUARD } from '@nestjs/core';
 import { WinstonModule } from 'nest-winston';
 import * as winston from 'winston';
 import 'winston-daily-rotate-file';
-import { ConfigModule } from '@nestjs/config';
-import configuration from './app.configuration';
-import * as Joi from 'joi';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { configuration, configSchema } from './app.configuration';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -17,18 +16,7 @@ import { WishlistsModule } from './wishlistlists/wishlists.module';
 import { OffersModule } from './offers/offers.module';
 import { AuthModule } from './auth/auth.module';
 
-const configSchema = Joi.object({
-  port: Joi.number().integer().default(3000),
-  database: Joi.object({
-    host: Joi.string()
-      .pattern(/postgres:\/\/[a-zA-Z]/)
-      .required(),
-    name: Joi.string().required(),
-    username: Joi.string().required(),
-    password: Joi.string().required(),
-    port: Joi.number().integer().default(5432),
-  }),
-});
+
 
 @Module({
   imports: [
@@ -63,9 +51,10 @@ const configSchema = Joi.object({
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: () => ({
-        ...getTypeOrmModuleOptions(),
-      }),
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => (
+        configService.get<Object>('database')
+      ),
     }),
     UsersModule,
     WishesModule,

@@ -11,7 +11,7 @@ import {
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class SigninUserDto {
+export class SigninUserResponseDto {
   @IsString()
   @IsNotEmpty()
   @IsJWT()

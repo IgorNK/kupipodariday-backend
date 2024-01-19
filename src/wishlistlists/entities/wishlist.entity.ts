@@ -34,6 +34,7 @@ export class Wishlist {
   image: string;
 
   @ManyToOne(() => User, (user) => user.wishlists)
+  @JoinColumn()
   owner: User;
 
   @Column()

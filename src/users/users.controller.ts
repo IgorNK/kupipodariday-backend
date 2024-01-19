@@ -9,7 +9,14 @@ import {
   Body,
   UseFilters,
   UseInterceptors,
+  UseGuards,
+  ForbiddenException,
+  Req,
+  Res,
 } from '@nestjs/common';
+import { JwtGuard } from '../guards/jwt.guard';
+import { LocalGuard } from '../guards/local.guard';
+import { Request, Response } from 'express';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Logger } from 'winston';
 import { UsersService } from './users.service';
@@ -21,8 +28,8 @@ import { CacheInterceptor, CacheKey, CacheTTL } from '@nestjs/cache-manager';
 import { SkipThrottle } from '@nestjs/throttler';
 import { ApiTags } from '@nestjs/swagger';
 
-@Controller('users')
 @ApiTags('users')
+@Controller('users')
 @UseInterceptors(CacheInterceptor)
 @SkipThrottle()
 @UseFilters(UserNotFoundExceptionFilter)
@@ -31,6 +38,13 @@ export class UsersController {
     @Inject(WINSTON_MODULE_PROVIDER) private logger: Logger,
     private usersService: UsersService,
   ) {}
+
+  @UseGuards(JwtGuard)
+  @Get('me')
+  async profile(@Req() req: Request) {
+    const user = req.user;
+    return `Logged in as ${user.username}`;
+  }
 
   @CacheKey('users')
   @CacheTTL(3600)
@@ -57,6 +71,7 @@ export class UsersController {
     return this.usersService.findMany(query);
   }
 
+  @UseGuards(JwtGuard)
   @Patch(':id')
   async updateOne(
     @Param('id') id: string,
@@ -65,6 +80,7 @@ export class UsersController {
     await this.usersService.updateOne(+id, updateUserDto);
   }
 
+  @UseGuards(JwtGuard)
   @Delete(':id')
   removeOne(@Param('id') id: string) {
     return this.usersService.removeOne(+id);
