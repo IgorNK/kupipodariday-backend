@@ -4,6 +4,7 @@ import {
   Column,
   OneToMany,
   ManyToOne,
+  ManyToMany,
   JoinColumn,
 } from 'typeorm';
 import { Length, IsUrl } from 'class-validator';
@@ -37,6 +38,6 @@ export class Wishlist {
   @JoinColumn()
   owner: User;
 
-  @Column()
+  @ManyToMany(() => Wish)
   items: Wish[];
 }

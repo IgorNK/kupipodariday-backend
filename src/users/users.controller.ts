@@ -39,12 +39,12 @@ export class UsersController {
     private usersService: UsersService,
   ) {}
 
-  @UseGuards(JwtGuard)
-  @Get('me')
-  async profile(@Req() req: Request) {
-    const user = req.user;
-    return `Logged in as ${user.username}`;
-  }
+  // @UseGuards(JwtGuard)
+  // @Get('me')
+  // async profile(@Req() req: Request) {
+  //   const user = req.user;
+  //   return `Logged in as ${user.username}`;
+  // }
 
   @CacheKey('users')
   @CacheTTL(3600)

@@ -1,12 +1,9 @@
-import { Injectable, BadRequestException} from '@nestjs/common';
-import { DatabaseError } from 'pg-protocol';
-import { QueryFailedError, Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '../users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
 import { SigninUserDto } from '../users/dto/sign-in-user.dto';
-import { SigninUserResponseDto } from '../users/dto/sign-in-user-response.dto'
+import { SigninUserResponseDto } from '../users/dto/sign-in-user-response.dto';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -23,7 +20,10 @@ export class AuthService {
     };
   }
 
-  async validatePassword(username: string, password: string): Promise<Partial<User>> {
+  async validatePassword(
+    username: string,
+    password: string,
+  ): Promise<Partial<User>> {
     const user = await this.usersService.findByUsername(username);
 
     if (user && user.password === password) {
