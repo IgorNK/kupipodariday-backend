@@ -2,8 +2,8 @@ import * as Joi from 'joi';
 
 export const configuration = () => ({
   port: parseInt(process.env.PORT, 10) || 3000,
-    jwt_secret: process.env.JWT_SECRET,
-    jwt_expiration: parseInt(process.env.JWT_EXPIRATION, 10) || 60 * 60 * 24 * 7,
+  jwt_secret: process.env.JWT_SECRET,
+  jwt_expiration: parseInt(process.env.JWT_EXPIRATION, 10) || 60 * 60 * 24 * 7,
   database: {
     type: 'postgres',
     host: process.env.DB_HOST,

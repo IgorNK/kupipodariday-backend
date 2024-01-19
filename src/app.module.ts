@@ -16,8 +16,6 @@ import { WishlistsModule } from './wishlistlists/wishlists.module';
 import { OffersModule } from './offers/offers.module';
 import { AuthModule } from './auth/auth.module';
 
-
-
 @Module({
   imports: [
     ThrottlerModule.forRoot([
@@ -36,13 +34,13 @@ import { AuthModule } from './auth/auth.module';
       },
       transports: [
         new winston.transports.Console({ format: winston.format.simple() }),
-        new winston.transports.DailyRotateFile({
-          filename: 'logs/error-%DATE%.log',
-          datePattern: 'YYYY-MM-DD-HH',
-          maxSize: '20m',
-          maxFiles: 3,
-          level: 'error',
-        }),
+        // new winston.transports.DailyRotateFile({
+        //   filename: 'logs/error-%DATE%.log',
+        //   datePattern: 'YYYY-MM-DD-HH',
+        //   maxSize: '20m',
+        //   maxFiles: 3,
+        //   level: 'error',
+        // }),
       ],
     }),
     ConfigModule.forRoot({
@@ -52,9 +50,8 @@ import { AuthModule } from './auth/auth.module';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => (
-        configService.get<Object>('database')
-      ),
+      useFactory: (configService: ConfigService) =>
+        configService.get<any>('database'),
     }),
     UsersModule,
     WishesModule,
