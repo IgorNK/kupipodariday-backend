@@ -5,11 +5,15 @@ import {
   OneToMany,
   ManyToOne,
   JoinColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToMany,
 } from 'typeorm';
 import { Length, IsUrl, Min } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import User from '../../users/entities/user.entity';
 import { Offer } from '../../offers/entities/offer.entity';
+import { Wishlist } from 'src/wishlistlists/entities/wishlist.entity';
 
 @Entity()
 export class Wish {
@@ -20,11 +24,18 @@ export class Wish {
   })
   id: number;
 
-  @Column()
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+  })
   @ApiProperty()
   createdAt: Date;
 
-  @Column()
+  @UpdateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+    onUpdate: 'CURRENT_TIMESTAMP(6)',
+  })
   @ApiProperty()
   updatedAt: Date;
 
@@ -86,4 +97,8 @@ export class Wish {
   @Column('int', { default: 0 })
   @ApiProperty()
   copied: number;
+
+  @ManyToOne(() => Wishlist, (wishlist) => wishlist.items)
+  @JoinColumn()
+  wishlist: Wishlist;
 }

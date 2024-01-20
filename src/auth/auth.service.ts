@@ -13,7 +13,7 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async auth(user: User): Promise<SigninUserResponseDto> {
+  async auth(user: Omit<User, 'password'>): Promise<SigninUserResponseDto> {
     const payload = { sub: user.id };
     return {
       access_token: this.jwtService.sign(payload),
@@ -23,25 +23,30 @@ export class AuthService {
   async validatePassword(
     username: string,
     password: string,
-  ): Promise<Partial<User>> {
+  ): Promise<Omit<User, 'password'>> {
     const user = await this.usersService.findByUsername(username);
 
-    if (user && user.password === password) {
-      const { password, ...result } = user;
-      return result;
+    if (user) {
+      console.log('auth service validate password: found user');
+      const match = await bcrypt.compare(password, user.password);
+      if (match) {
+        console.log('auth service validate password: password match');
+        const { password, ...result } = user;
+        return result;
+      } else {
+        console.log('auth service validate password: password mismatch');
+      }
     }
     return null;
   }
 
   async signin(signinUserDto: SigninUserDto): Promise<SigninUserResponseDto> {
     const { username, password } = signinUserDto;
-    const user = await this.usersService.findByUsername(username);
-    if (user) {
-      const match = await bcrypt.compare(password, user.password);
-      if (match) {
-        return this.auth(user);
-      }
+    console.log(`auth service signin: signin service auth for: ${username}, ${password}`);
+    const user = await this.validatePassword(username, password);
+    if (!user) {
+      throw new BadRequestException('Invalid username or password');
     }
-    throw new BadRequestException('Invalid username or password');
+    return this.auth(user);
   }
 }

@@ -6,6 +6,8 @@ import {
   ManyToOne,
   ManyToMany,
   JoinColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Length, IsUrl } from 'class-validator';
 import { Wish } from '../../wishes/entities/wish.entity';
@@ -16,17 +18,24 @@ export class Wishlist {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+  })
   createdAt: Date;
 
-  @Column()
+  @UpdateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+    onUpdate: 'CURRENT_TIMESTAMP(6)',
+  })
   updatedAt: Date;
 
   @Column({ default: 'Мой вишлист' })
   @Length(1, 250)
   name: string;
 
-  @Column()
+  @Column({ default: 'Нет описания' })
   @Length(1, 1500)
   description: string;
 
@@ -38,6 +47,6 @@ export class Wishlist {
   @JoinColumn()
   owner: User;
 
-  @ManyToMany(() => Wish)
+  @OneToMany(() => Wish, (wish) => wish.wishlist)
   items: Wish[];
 }

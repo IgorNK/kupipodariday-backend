@@ -15,6 +15,8 @@ async function bootstrap() {
 
   const app = await NestFactory.create(AppModule);
 
+  app.enableCors();
+
   const config = new DocumentBuilder()
     .setTitle('KupiPodariDay API')
     .setDescription('Wishlist service')

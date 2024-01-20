@@ -1,5 +1,6 @@
 import {
   Controller,
+  Req,
   Get,
   Post,
   Body,
@@ -9,7 +10,9 @@ import {
   Delete,
   UseFilters,
   UseInterceptors,
+  UseGuards,
 } from '@nestjs/common';
+import { JwtGuard } from '../guards/jwt.guard';
 import { WishesService } from './wishes.service';
 import { CreateWishDto } from './dto/create-wish.dto';
 import { UpdateWishDto } from './dto/update-wish.dto';
@@ -21,14 +24,17 @@ import { ApiTags, ApiResponse } from '@nestjs/swagger';
 
 @Controller('wishes')
 @ApiTags('wishes')
-@UseInterceptors(CacheInterceptor)
 @UseFilters(WishNotFoundExceptionFilter)
 export class WishesController {
   constructor(private readonly wishesService: WishesService) {}
 
+  @UseGuards(JwtGuard)
   @Post()
-  async create(@Body() createWishDto: CreateWishDto): Promise<Wish> {
-    return this.wishesService.create(createWishDto);
+  async create(
+    @Req() req,
+    @Body() createWishDto: CreateWishDto,
+  ): Promise<Wish> {
+    return this.wishesService.create(createWishDto, req.user);
   }
 
   @Post(':id/copy')
@@ -36,31 +42,46 @@ export class WishesController {
     return this.wishesService.copy(+id);
   }
 
-  @CacheKey('wishes')
-  @CacheTTL(3600)
-  @Header('Cache-Control', 'no-cache, max-age=3600')
+  @Get()
+  async findAll(): Promise<Wish[]> {
+    return this.wishesService.findAll();
+  }
+
+  // @CacheKey('wishes')
+  // @CacheTTL(3600)
+  // @Header('Cache-Control', 'no-cache, max-age=3600')
   @Get('last')
-  async findLast(): Promise<Wish> {
-    return this.wishesService.findLast();
+  async findLast(): Promise<Wish[]> {
+    console.log('Wishes controller find last');
+    const wish = await this.wishesService.findLast();
+    return [wish];
   }
 
-  @CacheKey('wishes')
-  @CacheTTL(3600)
-  @Header('Cache-Control', 'no-cache, max-age=3600')
+  // @CacheKey('wishes')
+  // @CacheTTL(3600)
+  // @Header('Cache-Control', 'no-cache, max-age=3600')
   @Get('top')
-  async findTop(): Promise<Wish> {
-    return this.wishesService.findTop();
+  async findTop(): Promise<Wish[]> {
+    console.log('wishes controller find top');
+    const wish = await this.wishesService.findTop();
+    return [wish];
   }
 
-  @CacheKey('wishes')
-  @CacheTTL(3600)
-  @Header('Cache-Control', 'no-cache, max-age=3600')
-  @Header('Content-Type', 'application/json')
-  @ApiResponse({ status: 200, description: 'Wish entity', type: Wish })
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<Wish> {
-    return await this.wishesService.findOne(+id);
+    console.log(`wishes controller find one: ${id}`);
+    return this.wishesService.findOne(+id);
   }
+
+  // @CacheKey('wishes')
+  // @CacheTTL(3600)
+  // @Header('Cache-Control', 'no-cache, max-age=3600')
+  // @Header('Content-Type', 'application/json')
+  // @ApiResponse({ status: 200, description: 'Wish entity', type: Wish })
+  // @Get(':id')
+  // async findOne(@Param('id') id: string): Promise<Wish> {
+  //   return await this.wishesService.findOne(+id);
+  // }
 
   @Patch(':id')
   async updateOne(

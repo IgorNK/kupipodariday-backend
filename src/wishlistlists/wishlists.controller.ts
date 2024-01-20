@@ -9,6 +9,9 @@ import {
   Delete,
   UseFilters,
   UseInterceptors,
+  UseGuards,
+  Res,
+  Req,
 } from '@nestjs/common';
 import { WishlistsService } from './wishlists.service';
 import { CreateWishlistDto } from './dto/create-wishlist.dto';
@@ -18,34 +21,39 @@ import { WishlistNotFoundExceptionFilter } from './filters/wishlist-not-found.fi
 import { CacheInterceptor, CacheKey, CacheTTL } from '@nestjs/cache-manager';
 import { UpdateResult, DeleteResult } from 'typeorm';
 import { ApiTags } from '@nestjs/swagger';
+import { JwtGuard } from 'src/guards/jwt.guard';
 
 @Controller('wishlistlists')
 @ApiTags('wishlistlists')
-@UseInterceptors(CacheInterceptor)
 @UseFilters(WishlistNotFoundExceptionFilter)
 export class WishlistsController {
   constructor(private readonly wishlistsService: WishlistsService) {}
 
+  @UseGuards(JwtGuard)
   @Post()
   async create(
+    @Req() req,
     @Body() createWishlistDto: CreateWishlistDto,
   ): Promise<Wishlist> {
-    return this.wishlistsService.create(createWishlistDto);
+    console.log('wishlists controller create');
+    console.log(createWishlistDto);
+    return this.wishlistsService.create(createWishlistDto, req.user);
   }
 
-  @CacheKey('wishlists')
-  @CacheTTL(3600)
-  @Header('Cache-Control', 'no-cache, max-age=3600')
+  // @CacheKey('wishlists')
+  // @CacheTTL(3600)
+  // @Header('Cache-Control', 'no-cache, max-age=3600')
   @Get()
   async findAll(): Promise<Wishlist[]> {
     return this.wishlistsService.findAll();
   }
 
-  @CacheKey('wishlists')
-  @CacheTTL(3600)
-  @Header('Cache-Control', 'no-cache, max-age=3600')
+  // @CacheKey('wishlists')
+  // @CacheTTL(3600)
+  // @Header('Cache-Control', 'no-cache, max-age=3600')
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<Wishlist> {
+    console.log(`wishlists controller find one: ${id}`)
     return this.wishlistsService.findOne(+id);
   }
 

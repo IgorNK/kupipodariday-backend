@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CreateWishDto } from './dto/create-wish.dto';
 import { UpdateWishDto } from './dto/update-wish.dto';
 import { Wish } from './entities/wish.entity';
+import User from '../users/entities/user.entity';
 import { WishNotFoundException } from './exceptions/wish-not-found.exception';
 
 @Injectable()
@@ -13,8 +14,15 @@ export class WishesService {
     private readonly wishRepository: Repository<Wish>,
   ) {}
 
-  async create(createWishDto: CreateWishDto): Promise<Wish> {
-    return this.wishRepository.create(createWishDto);
+  async create(createWishDto: CreateWishDto, user: User): Promise<Wish> {
+    const wishWithUser = {
+      ...createWishDto,
+      owner: {
+        id: user.id,
+      },
+    };
+    const wish = this.wishRepository.create(wishWithUser);
+    return this.wishRepository.save(wish);
   }
 
   async copy(id: number) {
@@ -30,21 +38,69 @@ export class WishesService {
   }
 
   async findOne(id: number): Promise<Wish> {
+    console.log(`wishes service find one by id: ${id}`);
     return this.wishRepository.findOne({
       where: {
         id,
+      },
+      relations: ['owner', 'offers'],
+      select: {
+        owner: {
+          id: true,
+          username: true,
+          about: true,
+          avatar: true,
+          createdAt: true,
+          updatedAt: true,
+        },
       },
     });
   }
 
   async findLast(): Promise<Wish> {
     return this.wishRepository.findOne({
-      order: { createdAt: 'ASC' },
+      where: {},
+      order: { createdAt: 'DESC' },
+      relations: ['owner', 'offers'],
+      select: {
+        owner: {
+          id: true,
+          username: true,
+          about: true,
+          avatar: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      },
     });
   }
 
   async findTop(): Promise<Wish> {
     return this.wishRepository.findOne({
+      where: {},
+      order: { copied: 'DESC' },
+      relations: ['owner', 'offers'],
+      select: {
+        owner: {
+          id: true,
+          username: true,
+          about: true,
+          avatar: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      },
+    });
+  }
+
+  async findByUser(user: User) {
+    console.log(`withes service find one by user: ${user.username}`);
+    return this.wishRepository.find({
+      where: {
+        owner: {
+          id: user.id,
+        },
+      },
       order: { createdAt: 'DESC' },
     });
   }

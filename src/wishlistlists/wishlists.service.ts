@@ -5,6 +5,8 @@ import { Wishlist } from './entities/wishlist.entity';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { WishlistNotFoundException } from './exceptions/wishlist-not-found.exception';
+import User from 'src/users/entities/user.entity';
+import { Wish } from 'src/wishes/entities/wish.entity';
 
 @Injectable()
 export class WishlistsService {
@@ -13,18 +15,64 @@ export class WishlistsService {
     private readonly wishlistRepository: Repository<Wishlist>,
   ) {}
 
-  async create(createWishlistDto: CreateWishlistDto): Promise<Wishlist> {
-    return this.wishlistRepository.create(createWishlistDto);
+  async create(createWishlistDto: CreateWishlistDto, user: User): Promise<Wishlist> {
+    const wishlistWithUser = {
+      ...createWishlistDto,
+      owner: user,
+      items: createWishlistDto.itemsId.map((item) => {
+        return { id: item };
+      }),
+    };
+    console.log('creating wishlist:');
+    console.log(wishlistWithUser);
+    const wishlist = await this.wishlistRepository.create(wishlistWithUser);
+    return this.wishlistRepository.save(wishlist);
   }
 
   async findAll(): Promise<Wishlist[]> {
-    return this.wishlistRepository.find();
+    return this.wishlistRepository.find({
+      relations: ['owner'],
+      select: {
+        owner: {
+          id: true,
+          username: true,
+          about: true,
+          avatar: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      }
+    });
   }
 
   async findOne(id: number): Promise<Wishlist> {
+    console.log(`wishlists service find one: ${id}`);
     return this.wishlistRepository.findOne({
       where: {
         id,
+      },
+      relations: ['owner', 'items'],
+      select: {
+        owner: {
+          id: true,
+          username: true,
+          about: true,
+          avatar: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+        items: {
+          id: true,
+          createdAt: true,
+          updatedAt: true,
+          name: true,
+          link: true,
+          image: true,
+          price: true,
+          raised: true,
+          copied: true,
+          description: true,
+        },
       },
     });
   }

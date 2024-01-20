@@ -44,6 +44,7 @@ export const AppDataSource = new DataSource({
     join(__dirname, '/../dist/src/offers/entities/*.entity{.d.ts,.js}'),
     join(__dirname, '/../dist/src/wishlistlists/entities/*.entity{.d.ts,.js}'),
   ],
+  // entities: ['src/**/entities/*.entity.{js,ts}'],
   // entities: [__dirname + '/../**/*.entity.js'],
   // entities: ['dist/**/**/*.entity{.ts,.js}'],
   // entities: [__dirname + '/**/*.entity.{js,ts}'],
@@ -51,6 +52,7 @@ export const AppDataSource = new DataSource({
   //   __dirname + '/src/users/entities/user.entity.ts',
   //   __dirname + '/src/users/entities/user.entity.js',
   // ],
-  migrations: [join(__dirname, 'src/database/migrations/*.ts')],
+  migrations: ['src/database/migrations/*.js'],
+  // migrations: [join(__dirname, '/../src/database/migrations/*.ts')],
   synchronize: false,
 });
