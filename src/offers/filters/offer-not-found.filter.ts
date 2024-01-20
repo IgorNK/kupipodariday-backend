@@ -1,7 +1,7 @@
 import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
 import { OfferNotFoundException } from '../exceptions/offer-not-found.exception';
 
-@Catch()
+@Catch(OfferNotFoundException)
 export class OfferNotFoundExceptionFilter implements ExceptionFilter {
   catch(exception: OfferNotFoundException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();

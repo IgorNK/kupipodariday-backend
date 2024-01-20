@@ -22,11 +22,12 @@ import { Logger } from 'winston';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { FindUsersDto } from './dto/find-users.dto';
-import { User } from './entities/user.entity';
+import User from './entities/user.entity';
 import { UserNotFoundExceptionFilter } from './filters/user-not-found.filter';
 import { CacheInterceptor, CacheKey, CacheTTL } from '@nestjs/cache-manager';
 import { SkipThrottle } from '@nestjs/throttler';
 import { ApiTags } from '@nestjs/swagger';
+import { AppDataSource } from 'ormconfig';
 
 @ApiTags('users')
 @Controller('users')
@@ -46,13 +47,15 @@ export class UsersController {
   //   return `Logged in as ${user.username}`;
   // }
 
-  @CacheKey('users')
-  @CacheTTL(3600)
-  @Header('Cache-Control', 'no-cache, max-age=3600')
-  @SkipThrottle({ default: false })
+  // @CacheKey('users')
+  // @CacheTTL(3600)
+  // @Header('Cache-Control', 'no-cache, max-age=3600')
+  // @SkipThrottle({ default: false })
   @Get()
   async findAll(): Promise<User[]> {
+    this.logger.warn('find all called');
     return this.usersService.findAll();
+    // return AppDataSource.manager.find(User);
   }
 
   @CacheKey('users')

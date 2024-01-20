@@ -9,7 +9,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { UsersModule } from '../users/users.module';
 import { JwtStrategy } from './jwt.strategy';
 import { LocalStrategy } from './local.strategy';
-import { User } from '../users/entities/user.entity';
+import User from '../users/entities/user.entity';
 import { AuthController } from './auth.controller';
 
 @Module({

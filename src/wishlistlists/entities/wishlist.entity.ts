@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 import { Length, IsUrl } from 'class-validator';
 import { Wish } from '../../wishes/entities/wish.entity';
-import { User } from '../../users/entities/user.entity';
+import User from '../../users/entities/user.entity';
 
 @Entity()
 export class Wishlist {

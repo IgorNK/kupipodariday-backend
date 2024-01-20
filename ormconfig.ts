@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import { DataSource } from 'typeorm';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { join } from 'path';
 
 export const getTypeOrmModuleOptions = (): TypeOrmModuleOptions => {
   return {
@@ -10,7 +11,21 @@ export const getTypeOrmModuleOptions = (): TypeOrmModuleOptions => {
     username: process.env['DB_USERNAME'],
     password: process.env['DB_PASSWORD'],
     database: process.env['DB_NAME'],
-    entities: ['src/**/entities/*.entity{.ts,.js'],
+    // entities: ['src/**/entities/*.entity{.ts,.js}'],
+    entities: [
+      join(__dirname, '/../dist/src/users/entities/*.entity{.d.ts,.js}'),
+      join(__dirname, '/../dist/src/wishes/entities/*.entity{.d.ts,.js}'),
+      join(__dirname, '/../dist/src/offers/entities/*.entity{.d.ts,.js}'),
+      join(__dirname, '/../dist/src/wishlistlists/entities/*.entity{.d.ts,.js}'),
+    ],
+    // entities: [join(__dirname, '../src/**/entities/*.entity.js')],
+    // entities: ['dist/**/**/*.entity{.ts,.js}'],
+    // entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+    // entities: [__dirname + '/**/*.entity.{js,ts}'],
+    // entities: [
+    //   __dirname + '/src/users/entities/user.entity.ts',
+    //   __dirname + '/src/users/entities/user.entity.js',
+    // ],
     synchronize: false,
     logging: true,
   };
@@ -23,7 +38,19 @@ export const AppDataSource = new DataSource({
   username: process.env['DB_USERNAME'],
   password: process.env['DB_PASSWORD'],
   database: process.env['DB_NAME'],
-  entities: ['src/**/entities/*.entity{.ts,.js}'],
-  migrations: ['src/database/migrations/*.ts'],
+  entities: [
+    join(__dirname, '/../dist/src/users/entities/*.entity{.d.ts,.js}'),
+    join(__dirname, '/../dist/src/wishes/entities/*.entity{.d.ts,.js}'),
+    join(__dirname, '/../dist/src/offers/entities/*.entity{.d.ts,.js}'),
+    join(__dirname, '/../dist/src/wishlistlists/entities/*.entity{.d.ts,.js}'),
+  ],
+  // entities: [__dirname + '/../**/*.entity.js'],
+  // entities: ['dist/**/**/*.entity{.ts,.js}'],
+  // entities: [__dirname + '/**/*.entity.{js,ts}'],
+  // entities: [
+  //   __dirname + '/src/users/entities/user.entity.ts',
+  //   __dirname + '/src/users/entities/user.entity.js',
+  // ],
+  migrations: [join(__dirname, 'src/database/migrations/*.ts')],
   synchronize: false,
 });

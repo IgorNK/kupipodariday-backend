@@ -6,8 +6,13 @@ import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import helmet from 'helmet';
 import { nestCsrf } from 'ncsrf';
 import * as cookieParser from 'cookie-parser';
+import { AppDataSource } from 'ormconfig';
 
 async function bootstrap() {
+  if (AppDataSource.isInitialized === false) {
+    await AppDataSource.initialize();
+  }
+
   const app = await NestFactory.create(AppModule);
 
   const config = new DocumentBuilder()

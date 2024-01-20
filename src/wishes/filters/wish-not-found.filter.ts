@@ -1,7 +1,7 @@
 import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
 import { WishNotFoundException } from '../exceptions/wish-not-found.exception';
 
-@Catch()
+@Catch(WishNotFoundException)
 export class WishNotFoundExceptionFilter implements ExceptionFilter {
   catch(exception: WishNotFoundException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();

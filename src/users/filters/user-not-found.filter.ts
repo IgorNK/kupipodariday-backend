@@ -1,7 +1,7 @@
 import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
 import { UserNotFoundException } from '../exceptions/user-not-found.exception';
 
-@Catch()
+@Catch(UserNotFoundException)
 export class UserNotFoundExceptionFilter implements ExceptionFilter {
   catch(exception: UserNotFoundException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();

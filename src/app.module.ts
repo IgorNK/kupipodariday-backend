@@ -50,8 +50,7 @@ import { AuthModule } from './auth/auth.module';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) =>
-        configService.get<any>('database'),
+      useFactory: (configService: ConfigService) => getTypeOrmModuleOptions(),
     }),
     UsersModule,
     WishesModule,

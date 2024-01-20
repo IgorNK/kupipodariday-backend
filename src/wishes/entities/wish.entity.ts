@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 import { Length, IsUrl, Min } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { User } from '../../users/entities/user.entity';
+import User from '../../users/entities/user.entity';
 import { Offer } from '../../offers/entities/offer.entity';
 
 @Entity()
@@ -67,7 +67,7 @@ export class Wish {
   @ManyToOne(() => User, (user) => user.wishes)
   @JoinColumn()
   @ApiProperty({
-    type: () => User
+    type: () => User,
   })
   owner: User;
 

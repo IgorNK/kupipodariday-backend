@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 import { Min } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { User } from '../../users/entities/user.entity';
+import User from '../../users/entities/user.entity';
 import { Wish } from '../../wishes/entities/wish.entity';
 
 @Entity()

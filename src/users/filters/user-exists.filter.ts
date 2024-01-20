@@ -1,7 +1,7 @@
 import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
 import { UserExistsException } from '../exceptions/user-exists.exception';
 
-@Catch()
+@Catch(UserExistsException)
 export class UserExistsExceptionFilter implements ExceptionFilter {
   catch(exception: UserExistsException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
