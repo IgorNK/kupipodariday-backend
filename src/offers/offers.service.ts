@@ -31,39 +31,6 @@ export class OffersService {
     const offer = this.offerRepository.create(offerWithUser);
     await this.wishRepository.save(wish);
     return this.offerRepository.save(offer);
-    // const queryRunner = this.dataSource.createQueryRunner();
-    // await queryRunner.connect();
-    // await queryRunner.startTransaction();
-    // try {
-    //   console.log(`offers service create Trying to create offer for id: ${createOfferDto.itemId}, amount: ${createOfferDto.amount}`);
-    //   const offerWithUser = {
-    //     ...createOfferDto,
-    //     user,
-    //     item: { id: createOfferDto.itemId },
-    //   };
-    //   const offer = queryRunner.manager.create(Offer, offerWithUser);
-    //   const wish = await queryRunner.manager.findOne(Wish, {
-    //     where: {
-    //       id: createOfferDto.itemId,
-    //     },
-    //   });
-    //   console.log(
-    //     `offers service create: found wish: ${wish.name}, raised: ${wish.raised}`,
-    //   );
-    //   const raised: number = +wish.raised;
-    //   console.log(`raised: ${raised}`);
-    //   console.log(typeof raised);
-    //   wish.raised = raised + createOfferDto.amount;
-    //   await queryRunner.manager.save([offer]);
-    //   await queryRunner.manager.save([wish]);
-    //   console.log(`offers service create: wish saved, offer created`);
-    // } catch (error) {
-    //   console.log(`offers service create: couldn't complete transaction`);
-    //   console.log(error);
-    //   await queryRunner.rollbackTransaction();
-    // } finally {
-    //   await queryRunner.release();
-    // }
   }
 
   async findAll(): Promise<Offer[]> {

@@ -26,26 +26,20 @@ import { JwtGuard } from 'src/guards/jwt.guard';
 export class OffersController {
   constructor(private readonly offersService: OffersService) {}
 
-  // @CacheKey('offers')
-  // @CacheTTL(3600)
-  // @Header('Cache-Control', 'no-cache, max-age=3600')
   @UseGuards(JwtGuard)
   @Post()
   create(@Req() req, @Body() createOfferDto: CreateOfferDto) {
     return this.offersService.create(createOfferDto, req.user);
   }
 
-  // @CacheKey('offers')
-  // @CacheTTL(3600)
-  // @Header('Cache-Control', 'no-cache, max-age=3600')
+  @CacheKey('offers_findALl')
+  @CacheTTL(3600)
+  @Header('Cache-Control', 'no-cache, max-age=3600')
   @Get()
   findAll() {
     return this.offersService.findAll();
   }
 
-  // @CacheKey('offers')
-  // @CacheTTL(3600)
-  // @Header('Cache-Control', 'no-cache, max-age=3600')
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.offersService.findOne(+id);

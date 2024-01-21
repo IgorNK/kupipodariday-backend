@@ -38,14 +38,17 @@ export class WishesController {
   }
 
 
+  @CacheKey('wishes_findAll')
+  @CacheTTL(3600)
+  @Header('Cache-Control', 'no-cache, max-age=3600')
   @Get()
   async findAll(): Promise<Wish[]> {
     return this.wishesService.findAll();
   }
 
-  // @CacheKey('wishes')
-  // @CacheTTL(3600)
-  // @Header('Cache-Control', 'no-cache, max-age=3600')
+  @CacheKey('wishes_last')
+  @CacheTTL(3600)
+  @Header('Cache-Control', 'no-cache, max-age=3600')
   @Get('last')
   async findLast(): Promise<Wish[]> {
     console.log('Wishes controller find last');
@@ -53,9 +56,9 @@ export class WishesController {
     return [wish];
   }
 
-  // @CacheKey('wishes')
-  // @CacheTTL(3600)
-  // @Header('Cache-Control', 'no-cache, max-age=3600')
+  @CacheKey('wishes_top')
+  @CacheTTL(3600)
+  @Header('Cache-Control', 'no-cache, max-age=3600')
   @Get('top')
   async findTop(): Promise<Wish[]> {
     console.log('wishes controller find top');
@@ -75,16 +78,6 @@ export class WishesController {
     console.log(`wishes controller find one: ${id}`);
     return this.wishesService.findOne(+id);
   }
-
-  // @CacheKey('wishes')
-  // @CacheTTL(3600)
-  // @Header('Cache-Control', 'no-cache, max-age=3600')
-  // @Header('Content-Type', 'application/json')
-  // @ApiResponse({ status: 200, description: 'Wish entity', type: Wish })
-  // @Get(':id')
-  // async findOne(@Param('id') id: string): Promise<Wish> {
-  //   return await this.wishesService.findOne(+id);
-  // }
 
   @Patch(':id')
   async updateOne(

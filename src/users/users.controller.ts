@@ -35,7 +35,6 @@ import { UserPublicProfileResponseDto } from './dto/user-public-profile-response
 
 @ApiTags('users')
 @Controller('users')
-@SkipThrottle()
 @UseFilters(UserNotFoundExceptionFilter)
 export class UsersController {
   constructor(
@@ -44,17 +43,9 @@ export class UsersController {
     private readonly wishesService: WishesService,
   ) {}
 
-  // @UseGuards(JwtGuard)
-  // @Get('me')
-  // async profile(@Req() req: Request) {
-  //   const user = req.user;
-  //   return `Logged in as ${user.username}`;
-  // }
-
-  // @CacheKey('users')
-  // @CacheTTL(3600)
-  // @Header('Cache-Control', 'no-cache, max-age=3600')
-  @SkipThrottle({ default: false })
+  @CacheKey('users_findAll')
+  @CacheTTL(3600)
+  @Header('Cache-Control', 'no-cache, max-age=3600')
   @Get()
   async findAll(): Promise<UserPublicProfileResponseDto[]> {
     this.logger.warn('find all called');
@@ -62,9 +53,6 @@ export class UsersController {
   }
 
   @UseGuards(JwtGuard)
-  // @CacheKey('users')
-  // @CacheTTL(3600)
-  // @Header('Cache-Control', 'no-cache, max-age=3600')
   @SkipThrottle({ default: false })
   @Get('me')
   async findCurrent(@Req() req) {
@@ -85,9 +73,6 @@ export class UsersController {
     return this.usersService.removeOne(req.user.id);
   }
 
-  // @CacheKey('wishes')
-  // @CacheTTL(3600)
-  // @Header('Cache-Control', 'no-cache, max-age=3600')
   @UseGuards(JwtGuard)
   @Get('me/wishes')
   async findCurrentWishes(@Req() req): Promise<Wish[]> {
@@ -96,23 +81,12 @@ export class UsersController {
     return this.wishesService.findByUser(req.user);
   }
 
-  // @CacheKey('users')
-  // @CacheTTL(3600)
-  // @Header('Cache-Control', 'no-cache, max-age=3600')
-  // @Get(':id')
-  // async findOne(@Param('id') id: string): Promise<User> {
-  //   return this.usersService.findOne(+id);
-  // }
-
   @Post('find')
   async findMany(@Body() findUsersDto: FindUsersDto): Promise<UserPublicProfileResponseDto[]> {
     console.log(`user controller get find, query: ${findUsersDto}`);
     return this.usersService.findMany(findUsersDto);
   }
 
-  // @CacheKey('users')
-  // @CacheTTL(3600)
-  // @Header('Cache-Control', 'no-cache, max-age=3600')
   @Get(':username')
   async findByUsername(
     @Param('username') username: string,
@@ -123,9 +97,6 @@ export class UsersController {
     return rest;
   }
 
-  // @CacheKey('wishes')
-  // @CacheTTL(3600)
-  // @Header('Cache-Control', 'no-cache, max-age=3600')
   @Get(':username/wishes')
   async findWishesByUsername(
     @Param('username') username: string,

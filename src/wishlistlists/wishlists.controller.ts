@@ -40,17 +40,14 @@ export class WishlistsController {
     return this.wishlistsService.create(createWishlistDto, req.user);
   }
 
-  // @CacheKey('wishlists')
-  // @CacheTTL(3600)
-  // @Header('Cache-Control', 'no-cache, max-age=3600')
+  @CacheKey('wishlists_findAll')
+  @CacheTTL(3600)
+  @Header('Cache-Control', 'no-cache, max-age=3600')
   @Get()
   async findAll(): Promise<Wishlist[]> {
     return this.wishlistsService.findAll();
   }
 
-  // @CacheKey('wishlists')
-  // @CacheTTL(3600)
-  // @Header('Cache-Control', 'no-cache, max-age=3600')
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<Wishlist> {
     console.log(`wishlists controller find one: ${id}`)
