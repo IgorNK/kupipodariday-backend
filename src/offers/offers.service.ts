@@ -25,10 +25,20 @@ export class OffersService {
       where: {
         id: createOfferDto.itemId,
       },
+      relations: ['owner'],
+      select: {
+        owner: {
+          id: true,
+        },
+      },
     });
 
     if (!wish) {
       throw new BadRequestException("Invalid offer item");
+    }
+
+    if (wish.owner.id === user.id) {
+      throw new BadRequestException("You can't offer your own wish");
     }
 
     const remaining = Number(+wish.price) - Number(+wish.raised) - createOfferDto.amount;
