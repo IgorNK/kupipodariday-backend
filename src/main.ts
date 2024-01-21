@@ -9,9 +9,9 @@ import * as cookieParser from 'cookie-parser';
 import { AppDataSource } from 'ormconfig';
 
 async function bootstrap() {
-  if (AppDataSource.isInitialized === false) {
-    await AppDataSource.initialize();
-  }
+  // if (AppDataSource.isInitialized === false) {
+  //   await AppDataSource.initialize();
+  // }
 
   const app = await NestFactory.create(AppModule);
 

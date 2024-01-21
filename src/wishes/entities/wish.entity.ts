@@ -90,7 +90,9 @@ export class Wish {
   @Length(1, 1024)
   description: string;
 
-  @OneToMany(() => Offer, (offer) => offer.item)
+  @OneToMany(() => Offer, (offer) => offer.item, {
+    cascade: true,
+  })
   @ApiProperty()
   offers: Offer[];
 
@@ -98,7 +100,9 @@ export class Wish {
   @ApiProperty()
   copied: number;
 
-  @ManyToOne(() => Wishlist, (wishlist) => wishlist.items)
+  @ManyToOne(() => Wishlist, (wishlist) => wishlist.items, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   wishlist: Wishlist;
 }

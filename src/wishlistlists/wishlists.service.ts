@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { CreateWishlistDto } from './dto/create-wishlist.dto';
 import { UpdateWishlistDto } from './dto/update-wishlist.dto';
 import { Wishlist } from './entities/wishlist.entity';
@@ -80,18 +80,27 @@ export class WishlistsService {
   async updateOne(
     id: number,
     updateWishlistDto: UpdateWishlistDto,
+    user: User,
   ): Promise<UpdateResult> {
     const wishlist = await this.findOne(id);
+    console.log(`Wishlists service update one: ${id}, userid: ${user.id}, wishlist owner id: ${wishlist.owner.id}`);
     if (!wishlist) {
       throw new WishlistNotFoundException();
+    }
+    if (wishlist.owner.id !== user.id) {
+      throw new ForbiddenException();
     }
     return this.wishlistRepository.update(id, updateWishlistDto);
   }
 
-  async removeOne(id: number): Promise<DeleteResult> {
+  async removeOne(id: number, user: User): Promise<DeleteResult> {
     const wishlist = await this.findOne(id);
+    console.log(`Wishlists service remove one: ${id}, userid: ${user.id}, wishlist owner id: ${wishlist.owner.id}`);
     if (!wishlist) {
       throw new WishlistNotFoundException();
+    }
+    if (wishlist.owner.id !== user.id) {
+      throw new ForbiddenException();
     }
     return this.wishlistRepository.delete(id);
   }

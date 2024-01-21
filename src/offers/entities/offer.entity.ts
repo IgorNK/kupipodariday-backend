@@ -41,12 +41,16 @@ export class Offer {
 
   img: string;
 
-  @ManyToOne(() => User, (user) => user.offers)
+  @ManyToOne(() => User, (user) => user.offers, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   @ApiProperty()
   user: User;
 
-  @ManyToOne(() => Wish, (wish) => wish.offers)
+  @ManyToOne(() => Wish, (wish) => wish.offers, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   @ApiProperty()
   item: Wish;

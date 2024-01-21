@@ -85,15 +85,21 @@ export default class User {
   @IsNotEmpty()
   password: string;
 
-  @OneToMany(() => Wish, (wish) => wish.owner)
+  @OneToMany(() => Wish, (wish) => wish.owner, {
+    cascade: true,
+  })
   @ApiProperty()
   wishes: Wish[];
 
-  @OneToMany(() => Offer, (offer) => offer.user)
+  @OneToMany(() => Offer, (offer) => offer.user, {
+    cascade: true,
+  })
   @ApiProperty()
   offers: Offer[];
 
-  @OneToMany(() => Wishlist, (wishlist) => wishlist.owner)
+  @OneToMany(() => Wishlist, (wishlist) => wishlist.owner, {
+    cascade: true,
+  })
   @ApiProperty()
   wishlists: Wishlist[];
 }

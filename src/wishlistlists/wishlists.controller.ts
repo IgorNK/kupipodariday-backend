@@ -57,16 +57,19 @@ export class WishlistsController {
     return this.wishlistsService.findOne(+id);
   }
 
+  @UseGuards(JwtGuard)
   @Patch(':id')
   async updateOne(
+    @Req() req,
     @Param('id') id: string,
     @Body() updateWishlistDto: UpdateWishlistDto,
   ): Promise<UpdateResult> {
-    return this.wishlistsService.updateOne(+id, updateWishlistDto);
+    return this.wishlistsService.updateOne(+id, updateWishlistDto, req.user);
   }
 
+  @UseGuards(JwtGuard)
   @Delete(':id')
-  async removeOne(@Param('id') id: string): Promise<DeleteResult> {
-    return this.wishlistsService.removeOne(+id);
+  async removeOne(@Req() req, @Param('id') id: string): Promise<DeleteResult> {
+    return this.wishlistsService.removeOne(+id, req.user);
   }
 }
