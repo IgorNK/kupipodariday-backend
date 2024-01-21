@@ -16,7 +16,7 @@ import { WishesModule } from 'src/wishes/wishes.module';
 @Module({
   imports: [CacheModule.register(), TypeOrmModule.forFeature([User, Wish]), WishesModule],
   controllers: [UsersController],
-  providers: [UsersService, WishesService, JwtStrategy, ConfigService, JwtService],
+  providers: [UsersService, WishesService],
   exports: [UsersService],
 })
 export class UsersModule {}

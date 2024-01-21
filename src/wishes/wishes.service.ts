@@ -25,12 +25,31 @@ export class WishesService {
     return this.wishRepository.save(wish);
   }
 
-  async copy(id: number) {
-    const wish: Wish = await this.findOne(id);
-    if (!wish) {
+  async copy(id: number, user: User) {
+    const copiedWish: Wish = await this.findOne(id);
+    if (!copiedWish) {
       throw new WishNotFoundException();
     }
-    return this.wishRepository.create(wish as CreateWishDto);
+    copiedWish.copied = Number(+copiedWish.copied) + 1;
+    const {
+      id: _,
+      raised,
+      owner,
+      offers,
+      createdAt,
+      updatedAt,
+      copied,
+      ...newWishDto
+    } = copiedWish;
+    const wishWithUser = {
+      ...newWishDto,
+      owner: {
+        id: user.id,
+      },
+    };
+    const wish = this.wishRepository.create(wishWithUser);
+    await this.wishRepository.save(copiedWish);
+    return this.wishRepository.save(wish);
   }
 
   async findAll(): Promise<Wish[]> {
@@ -39,11 +58,11 @@ export class WishesService {
 
   async findOne(id: number): Promise<Wish> {
     console.log(`wishes service find one by id: ${id}`);
-    return this.wishRepository.findOne({
+    const wish = await this.wishRepository.findOne({
       where: {
         id,
       },
-      relations: ['owner', 'offers'],
+      relations: ['owner', 'offers', 'offers.user'],
       select: {
         owner: {
           id: true,
@@ -55,6 +74,11 @@ export class WishesService {
         },
       },
     });
+    wish.offers.forEach((offer) => {
+      offer.name = offer.user.username;
+      offer.img = offer.user.avatar;
+    });
+    return wish;
   }
 
   async findLast(): Promise<Wish> {

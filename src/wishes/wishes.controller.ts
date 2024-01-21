@@ -37,10 +37,6 @@ export class WishesController {
     return this.wishesService.create(createWishDto, req.user);
   }
 
-  @Post(':id/copy')
-  async copy(@Param('id') id: string): Promise<Wish> {
-    return this.wishesService.copy(+id);
-  }
 
   @Get()
   async findAll(): Promise<Wish[]> {
@@ -65,6 +61,13 @@ export class WishesController {
     console.log('wishes controller find top');
     const wish = await this.wishesService.findTop();
     return [wish];
+  }
+
+  @UseGuards(JwtGuard)
+  @Post(':id/copy')
+  async copy(@Req() req, @Param('id') id: string): Promise<Wish> {
+    console.log(`wishes controller copy: ${id}`);
+    return this.wishesService.copy(+id, req.user);
   }
 
   @Get(':id')

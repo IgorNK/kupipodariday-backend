@@ -37,6 +37,10 @@ export class Offer {
   @ApiProperty()
   updatedAt: Date;
 
+  name: string;
+
+  img: string;
+
   @ManyToOne(() => User, (user) => user.offers)
   @JoinColumn()
   @ApiProperty()
@@ -47,9 +51,9 @@ export class Offer {
   @ApiProperty()
   item: Wish;
 
-  @Column('decimal', { precision: 10, scale: 2 })
+  @Column('numeric', { scale: 2 })
   @ApiProperty({
-    description: 'How many items',
+    description: 'How much to raise',
     example: '1',
   })
   @Min(1)

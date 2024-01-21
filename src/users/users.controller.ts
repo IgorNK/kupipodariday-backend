@@ -40,8 +40,8 @@ import { UserPublicProfileResponseDto } from './dto/user-public-profile-response
 export class UsersController {
   constructor(
     @Inject(WINSTON_MODULE_PROVIDER) private logger: Logger,
-    private usersService: UsersService,
-    private wishesService: WishesService,
+    private readonly usersService: UsersService,
+    private readonly wishesService: WishesService,
   ) {}
 
   // @UseGuards(JwtGuard)

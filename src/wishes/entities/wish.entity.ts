@@ -63,7 +63,7 @@ export class Wish {
   })
   image: string;
 
-  @Column('decimal', { precision: 10, scale: 2 })
+  @Column('numeric', { scale: 2 })
   @ApiProperty({
     description: "The item's price",
     example: '100',
@@ -71,7 +71,7 @@ export class Wish {
   @Min(1)
   price: number;
 
-  @Column('decimal', { precision: 10, scale: 2, default: 0 })
+  @Column('numeric', { scale: 2, default: 0 })
   @ApiProperty()
   raised: number;
 
