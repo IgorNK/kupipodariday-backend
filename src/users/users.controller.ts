@@ -32,10 +32,12 @@ import { ApiTags } from '@nestjs/swagger';
 import { AppDataSource } from 'ormconfig';
 import { WishesService } from 'src/wishes/wishes.service';
 import { UserPublicProfileResponseDto } from './dto/user-public-profile-response.dto';
+import { UserProfileResponseDto } from './dto/user-profile-response.dto';
 
 @ApiTags('users')
 @Controller('users')
 @UseFilters(UserNotFoundExceptionFilter)
+@UseInterceptors(CacheInterceptor)
 export class UsersController {
   constructor(
     @Inject(WINSTON_MODULE_PROVIDER) private logger: Logger,
@@ -63,8 +65,8 @@ export class UsersController {
 
   @UseGuards(JwtGuard)
   @Patch('me')
-  async updateOne(@Req() req, @Body() updateUserDto: UpdateUserDto) {
-    await this.usersService.updateOne(req.user.id, updateUserDto);
+  async updateOne(@Req() req, @Body() updateUserDto: UpdateUserDto): Promise<UserProfileResponseDto> {
+    return this.usersService.updateOne(req.user.id, updateUserDto);
   }
 
   @UseGuards(JwtGuard)

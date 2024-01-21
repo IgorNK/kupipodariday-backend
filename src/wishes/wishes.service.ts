@@ -81,8 +81,8 @@ export class WishesService {
     return wish;
   }
 
-  async findLast(): Promise<Wish> {
-    return this.wishRepository.findOne({
+  async findLast(): Promise<Wish[]> {
+    return this.wishRepository.find({
       where: {},
       order: { createdAt: 'DESC' },
       relations: ['owner', 'offers'],
@@ -96,11 +96,12 @@ export class WishesService {
           updatedAt: true,
         },
       },
+      take: 40,
     });
   }
 
-  async findTop(): Promise<Wish> {
-    return this.wishRepository.findOne({
+  async findTop(): Promise<Wish[]> {
+    return this.wishRepository.find({
       where: {},
       order: { copied: 'DESC' },
       relations: ['owner', 'offers'],
@@ -114,6 +115,7 @@ export class WishesService {
           updatedAt: true,
         },
       },
+      take: 20,
     });
   }
 

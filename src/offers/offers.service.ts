@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { CreateOfferDto } from './dto/create-offer.dto';
 import { Offer } from './entities/offer.entity';
 import { DataSource, DeleteResult, Repository } from 'typeorm';
@@ -17,16 +17,32 @@ export class OffersService {
   ) {}
 
   async create(createOfferDto: CreateOfferDto, user: User): Promise<Offer> {
-    const offerWithUser = {
-      ...createOfferDto,
-      user,
-      item: { id: createOfferDto.itemId },
-    };
+    if (createOfferDto.amount <= 0) {
+      throw new BadRequestException("Offer amount must be greater than 0");
+    }
+    
     const wish = await this.wishRepository.findOne({
       where: {
         id: createOfferDto.itemId,
       },
     });
+
+    if (!wish) {
+      throw new BadRequestException("Invalid offer item");
+    }
+
+    const remaining = Number(+wish.price) - Number(+wish.raised) - createOfferDto.amount;
+
+    if (remaining < 0) {
+      throw new BadRequestException("Offer amount must be less than or equal to remaining price");
+    }
+    
+    const offerWithUser = {
+      ...createOfferDto,
+      user,
+      item: { id: createOfferDto.itemId },
+    };
+    
     wish.raised = Number(+wish.raised) + createOfferDto.amount;
     const offer = this.offerRepository.create(offerWithUser);
     await this.wishRepository.save(wish);

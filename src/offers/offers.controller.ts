@@ -41,7 +41,7 @@ export class OffersController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.offersService.findOne(+id);
+  findOne(@Param('id') id: number) {
+    return this.offersService.findOne(id);
   }
 }

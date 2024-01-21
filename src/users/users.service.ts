@@ -17,6 +17,7 @@ import { EmailExistsException } from './exceptions/email-exists.exception';
 import * as bcrypt from 'bcrypt';
 import { FindUsersDto } from './dto/find-users.dto';
 import { UserPublicProfileResponseDto } from './dto/user-public-profile-response.dto';
+import { UserProfileResponseDto } from './dto/user-profile-response.dto';
 
 @Injectable()
 export class UsersService {
@@ -91,7 +92,7 @@ export class UsersService {
   async updateOne(
     id: number,
     updateUserDto: UpdateUserDto,
-  ): Promise<UpdateResult> {
+  ): Promise<UserProfileResponseDto> {
     const user = await this.findOne(id);
     if (!user) {
       throw new UserNotFoundException();
@@ -102,7 +103,9 @@ export class UsersService {
       const hashedPassword = await bcrypt.hash(password, salt);
       updateUserDto.password = hashedPassword;
     }
-    return this.userRepository.update(id, updateUserDto);
+    const updatedUser = await this.userRepository.save({ id, ...updateUserDto });
+    const { password: _, wishes, offers, wishlists, ...rest } = updatedUser;
+    return rest;
   }
 
   async removeOne(id: number): Promise<DeleteResult> {

@@ -25,6 +25,7 @@ import { ApiTags, ApiResponse } from '@nestjs/swagger';
 @Controller('wishes')
 @ApiTags('wishes')
 @UseFilters(WishNotFoundExceptionFilter)
+@UseInterceptors(CacheInterceptor)
 export class WishesController {
   constructor(private readonly wishesService: WishesService) {}
 
@@ -52,8 +53,7 @@ export class WishesController {
   @Get('last')
   async findLast(): Promise<Wish[]> {
     console.log('Wishes controller find last');
-    const wish = await this.wishesService.findLast();
-    return [wish];
+    return this.wishesService.findLast();
   }
 
   @CacheKey('wishes_top')
@@ -62,33 +62,32 @@ export class WishesController {
   @Get('top')
   async findTop(): Promise<Wish[]> {
     console.log('wishes controller find top');
-    const wish = await this.wishesService.findTop();
-    return [wish];
+    return this.wishesService.findTop();
   }
 
   @UseGuards(JwtGuard)
   @Post(':id/copy')
-  async copy(@Req() req, @Param('id') id: string): Promise<Wish> {
+  async copy(@Req() req, @Param('id') id: number): Promise<Wish> {
     console.log(`wishes controller copy: ${id}`);
-    return this.wishesService.copy(+id, req.user);
+    return this.wishesService.copy(id, req.user);
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<Wish> {
+  async findOne(@Param('id') id: number): Promise<Wish> {
     console.log(`wishes controller find one: ${id}`);
-    return this.wishesService.findOne(+id);
+    return this.wishesService.findOne(id);
   }
 
   @Patch(':id')
   async updateOne(
-    @Param('id') id: string,
+    @Param('id') id: number,
     @Body() updateWishDto: UpdateWishDto,
   ): Promise<UpdateResult> {
-    return this.wishesService.updateOne(+id, updateWishDto);
+    return this.wishesService.updateOne(id, updateWishDto);
   }
 
   @Delete(':id')
-  removeOne(@Param('id') id: string): Promise<DeleteResult> {
-    return this.wishesService.removeOne(+id);
+  removeOne(@Param('id') id: number): Promise<DeleteResult> {
+    return this.wishesService.removeOne(id);
   }
 }

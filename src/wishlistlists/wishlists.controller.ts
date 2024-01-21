@@ -26,6 +26,7 @@ import { JwtGuard } from 'src/guards/jwt.guard';
 @Controller('wishlistlists')
 @ApiTags('wishlistlists')
 @UseFilters(WishlistNotFoundExceptionFilter)
+@UseInterceptors(CacheInterceptor)
 export class WishlistsController {
   constructor(private readonly wishlistsService: WishlistsService) {}
 
@@ -49,24 +50,24 @@ export class WishlistsController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<Wishlist> {
+  async findOne(@Param('id') id: number): Promise<Wishlist> {
     console.log(`wishlists controller find one: ${id}`)
-    return this.wishlistsService.findOne(+id);
+    return this.wishlistsService.findOne(id);
   }
 
   @UseGuards(JwtGuard)
   @Patch(':id')
   async updateOne(
     @Req() req,
-    @Param('id') id: string,
+    @Param('id') id: number,
     @Body() updateWishlistDto: UpdateWishlistDto,
   ): Promise<UpdateResult> {
-    return this.wishlistsService.updateOne(+id, updateWishlistDto, req.user);
+    return this.wishlistsService.updateOne(id, updateWishlistDto, req.user);
   }
 
   @UseGuards(JwtGuard)
   @Delete(':id')
-  async removeOne(@Req() req, @Param('id') id: string): Promise<DeleteResult> {
-    return this.wishlistsService.removeOne(+id, req.user);
+  async removeOne(@Req() req, @Param('id') id: number): Promise<DeleteResult> {
+    return this.wishlistsService.removeOne(id, req.user);
   }
 }

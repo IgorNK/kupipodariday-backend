@@ -7,6 +7,7 @@ import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { nestCsrf } from 'ncsrf';
 import * as cookieParser from 'cookie-parser';
 import { AppDataSource } from 'ormconfig';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   // if (AppDataSource.isInitialized === false) {
@@ -14,6 +15,10 @@ async function bootstrap() {
   // }
 
   const app = await NestFactory.create(AppModule);
+
+  app.useGlobalPipes(new ValidationPipe({
+    transform: true,
+  }));
 
   app.enableCors();
 
