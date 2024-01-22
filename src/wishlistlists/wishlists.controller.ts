@@ -36,8 +36,8 @@ export class WishlistsController {
     @Req() req,
     @Body() createWishlistDto: CreateWishlistDto,
   ): Promise<Wishlist> {
-    console.log('wishlists controller create');
-    console.log(createWishlistDto);
+    // console.log('wishlists controller create');
+    // console.log(createWishlistDto);
     return this.wishlistsService.create(createWishlistDto, req.user);
   }
 
@@ -51,7 +51,7 @@ export class WishlistsController {
 
   @Get(':id')
   async findOne(@Param('id') id: number): Promise<Wishlist> {
-    console.log(`wishlists controller find one: ${id}`)
+    // console.log(`wishlists controller find one: ${id}`)
     return this.wishlistsService.findOne(id);
   }
 

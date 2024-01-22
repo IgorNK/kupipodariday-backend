@@ -27,14 +27,14 @@ export class AuthService {
     const user = await this.usersService.findByUsername(username);
 
     if (user) {
-      console.log('auth service validate password: found user');
+      // console.log('auth service validate password: found user');
       const match = await bcrypt.compare(password, user.password);
       if (match) {
-        console.log('auth service validate password: password match');
+        // console.log('auth service validate password: password match');
         const { password, ...result } = user;
         return result;
       } else {
-        console.log('auth service validate password: password mismatch');
+        // console.log('auth service validate password: password mismatch');
       }
     }
     return null;
@@ -42,7 +42,7 @@ export class AuthService {
 
   async signin(signinUserDto: SigninUserDto): Promise<SigninUserResponseDto> {
     const { username, password } = signinUserDto;
-    console.log(`auth service signin: signin service auth for: ${username}, ${password}`);
+    // console.log(`auth service signin: signin service auth for: ${username}, ${password}`);
     const user = await this.validatePassword(username, password);
     if (!user) {
       throw new BadRequestException('Invalid username or password');

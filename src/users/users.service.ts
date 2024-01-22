@@ -27,7 +27,7 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<SignupUserResponseDto> {
-    const { username, email, password } = createUserDto;
+    const { password } = createUserDto;
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(password, salt);
     createUserDto.password = hashedPassword;
@@ -47,7 +47,7 @@ export class UsersService {
   }
 
   async findAll(): Promise<User[]> {
-    console.log('user service find all: find all in users service');
+    // console.log('user service find all: find all in users service');
     return this.userRepository.find({
       select: {
         id: true,
@@ -61,7 +61,7 @@ export class UsersService {
   }
 
   async findOne(id: number): Promise<User> {
-    console.log(`user service find one: searching by id: ${id}`);
+    // console.log(`user service find one: searching by id: ${id}`);
     return this.userRepository.findOne({
       where: {
         id,
@@ -70,8 +70,8 @@ export class UsersService {
   }
 
   async findByUsername(username: string): Promise<User> {
-    console.log(`user service find by username: searching by username: ${username}`);
-    console.log(username);
+    // console.log(`user service find by username: searching by username: ${username}`);
+    // console.log(username);
     return this.userRepository.findOne({ where: { username } });
   }
 

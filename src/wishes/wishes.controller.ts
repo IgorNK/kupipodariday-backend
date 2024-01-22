@@ -52,8 +52,8 @@ export class WishesController {
   @Header('Cache-Control', 'no-cache, max-age=3600')
   @Get('last')
   async findLast(): Promise<Wish[]> {
-    console.log('Wishes controller find last');
-    return this.wishesService.findLast();
+    // console.log('Wishes controller find last');
+    return this.wishesService.findLast(40);
   }
 
   @CacheKey('wishes_top')
@@ -61,33 +61,36 @@ export class WishesController {
   @Header('Cache-Control', 'no-cache, max-age=3600')
   @Get('top')
   async findTop(): Promise<Wish[]> {
-    console.log('wishes controller find top');
-    return this.wishesService.findTop();
+    // console.log('wishes controller find top');
+    return this.wishesService.findTop(20);
   }
 
   @UseGuards(JwtGuard)
   @Post(':id/copy')
   async copy(@Req() req, @Param('id') id: number): Promise<Wish> {
-    console.log(`wishes controller copy: ${id}`);
+    // console.log(`wishes controller copy: ${id}`);
     return this.wishesService.copy(id, req.user);
   }
 
   @Get(':id')
   async findOne(@Param('id') id: number): Promise<Wish> {
-    console.log(`wishes controller find one: ${id}`);
+    // console.log(`wishes controller find one: ${id}`);
     return this.wishesService.findOne(id);
   }
 
+  @UseGuards(JwtGuard)
   @Patch(':id')
   async updateOne(
+    @Req() req,
     @Param('id') id: number,
     @Body() updateWishDto: UpdateWishDto,
   ): Promise<UpdateResult> {
-    return this.wishesService.updateOne(id, updateWishDto);
+    return this.wishesService.updateOne(id, updateWishDto, req.user);
   }
 
+  @UseGuards(JwtGuard)
   @Delete(':id')
-  removeOne(@Param('id') id: number): Promise<DeleteResult> {
-    return this.wishesService.removeOne(id);
+  removeOne(@Req() req, @Param('id') id: number): Promise<DeleteResult> {
+    return this.wishesService.removeOne(id, req.user);
   }
 }

@@ -23,8 +23,8 @@ export class WishlistsService {
         return { id: item };
       }),
     };
-    console.log('creating wishlist:');
-    console.log(wishlistWithUser);
+    // console.log('creating wishlist:');
+    // console.log(wishlistWithUser);
     const wishlist = await this.wishlistRepository.create(wishlistWithUser);
     return this.wishlistRepository.save(wishlist);
   }
@@ -46,7 +46,7 @@ export class WishlistsService {
   }
 
   async findOne(id: number): Promise<Wishlist> {
-    console.log(`wishlists service find one: ${id}`);
+    // console.log(`wishlists service find one: ${id}`);
     return this.wishlistRepository.findOne({
       where: {
         id,
@@ -83,7 +83,7 @@ export class WishlistsService {
     user: User,
   ): Promise<UpdateResult> {
     const wishlist = await this.findOne(id);
-    console.log(`Wishlists service update one: ${id}, userid: ${user.id}, wishlist owner id: ${wishlist.owner.id}`);
+    // console.log(`Wishlists service update one: ${id}, userid: ${user.id}, wishlist owner id: ${wishlist.owner.id}`);
     if (!wishlist) {
       throw new WishlistNotFoundException();
     }
@@ -95,7 +95,7 @@ export class WishlistsService {
 
   async removeOne(id: number, user: User): Promise<DeleteResult> {
     const wishlist = await this.findOne(id);
-    console.log(`Wishlists service remove one: ${id}, userid: ${user.id}, wishlist owner id: ${wishlist.owner.id}`);
+    // console.log(`Wishlists service remove one: ${id}, userid: ${user.id}, wishlist owner id: ${wishlist.owner.id}`);
     if (!wishlist) {
       throw new WishlistNotFoundException();
     }

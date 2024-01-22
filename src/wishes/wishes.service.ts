@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateWishDto } from './dto/create-wish.dto';
@@ -57,7 +57,7 @@ export class WishesService {
   }
 
   async findOne(id: number): Promise<Wish> {
-    console.log(`wishes service find one by id: ${id}`);
+    // console.log(`wishes service find one by id: ${id}`);
     const wish = await this.wishRepository.findOne({
       where: {
         id,
@@ -81,7 +81,7 @@ export class WishesService {
     return wish;
   }
 
-  async findLast(): Promise<Wish[]> {
+  async findLast(amount: number): Promise<Wish[]> {
     return this.wishRepository.find({
       where: {},
       order: { createdAt: 'DESC' },
@@ -96,11 +96,11 @@ export class WishesService {
           updatedAt: true,
         },
       },
-      take: 40,
+      take: amount,
     });
   }
 
-  async findTop(): Promise<Wish[]> {
+  async findTop(amount: number): Promise<Wish[]> {
     return this.wishRepository.find({
       where: {},
       order: { copied: 'DESC' },
@@ -115,12 +115,12 @@ export class WishesService {
           updatedAt: true,
         },
       },
-      take: 20,
+      take: amount,
     });
   }
 
   async findByUser(user: User) {
-    console.log(`withes service find one by user: ${user.username}`);
+    // console.log(`wishes service find one by user: ${user.username}`);
     return this.wishRepository.find({
       where: {
         owner: {
@@ -134,18 +134,25 @@ export class WishesService {
   async updateOne(
     id: number,
     updateWishDto: UpdateWishDto,
+    user: User,
   ): Promise<UpdateResult> {
     const wish = await this.findOne(id);
     if (!wish) {
       throw new WishNotFoundException();
     }
+    if (wish.owner.id !== user.id) {
+      throw new ForbiddenException();
+    }
     return this.wishRepository.update(id, updateWishDto);
   }
 
-  async removeOne(id: number): Promise<DeleteResult> {
+  async removeOne(id: number, user: User): Promise<DeleteResult> {
     const wish = await this.findOne(id);
     if (!wish) {
       throw new WishNotFoundException();
+    }
+    if (wish.owner.id !== user.id) {
+      throw new ForbiddenException();
     }
     return this.wishRepository.delete(id);
   }

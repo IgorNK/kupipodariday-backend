@@ -1,4 +1,4 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Inject, Injectable } from '@nestjs/common';
 import { CreateOfferDto } from './dto/create-offer.dto';
 import { Offer } from './entities/offer.entity';
 import { DataSource, DeleteResult, Repository } from 'typeorm';
@@ -102,10 +102,17 @@ export class OffersService {
     });
   }
 
-  async removeOne(id: number): Promise<DeleteResult> {
-    const offer = await this.findOne(id);
+  async removeOne(id: number, user: User): Promise<DeleteResult> {
+    const offer = await this.offerRepository.findOne({
+      where: {
+        id,
+      },
+    });
     if (!offer) {
       throw new OfferNotFoundException();
+    }
+    if (offer.user.id !== user.id) {
+      throw new ForbiddenException();
     }
     return this.offerRepository.delete(id);
   }

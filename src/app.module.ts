@@ -50,10 +50,9 @@ import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => getTypeOrmModuleOptions(),
+      useFactory: () => getTypeOrmModuleOptions(),
     }),
-    // CacheModule.register(),
+    CacheModule.register(),
     UsersModule,
     WishesModule,
     WishlistsModule,
@@ -66,10 +65,10 @@ import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
     },
-    // {
-    //   provide: APP_INTERCEPTOR,
-    //   useClass: CacheInterceptor,
-    // },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: CacheInterceptor,
+    },
     AppService,
   ],
 })

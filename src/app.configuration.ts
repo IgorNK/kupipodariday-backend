@@ -13,7 +13,7 @@ export const configuration = () => ({
     port: parseInt(process.env.DB_PORT, 10) || 5432,
     entities: ['src/**/entities/*.entity{.ts,.js'],
     synchronize: false,
-    logging: true,
+    logging: false,
   },
 });
 

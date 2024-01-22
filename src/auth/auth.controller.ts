@@ -31,8 +31,8 @@ export class AuthController {
     @Req() req,
     @Body() body: SigninUserDto,
   ): Promise<SigninUserResponseDto> {
-    console.log('auth controller signing in, user in request:');
-    console.log(req.user);
+    // console.log('auth controller signing in, user in request:');
+    // console.log(req.user);
     return this.authService.auth(req.user);
   }
 
