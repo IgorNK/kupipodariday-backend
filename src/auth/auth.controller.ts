@@ -1,8 +1,14 @@
-import { Controller, Post, Get, Body, UseGuards, Req, UseFilters } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  UseGuards,
+  Req,
+  UseFilters,
+} from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { AuthService } from './auth.service';
 import { LocalGuard } from '../guards/local.guard';
-import { JwtGuard } from '../guards/jwt.guard';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { SigninUserDto } from '../users/dto/sign-in-user.dto';
 import { SigninUserResponseDto } from '../users/dto/sign-in-user-response.dto';
@@ -18,21 +24,12 @@ export class AuthController {
     private authService: AuthService,
   ) {}
 
-  // @Post('signin')
-  // async signin(@Body() body: SigninUserDto): Promise<SigninUserResponseDto> {
-  //   console.log(`called signin for body:`);
-  //   console.log(body);
-  //   return this.authService.signin(body);
-  // }
-
   @UseGuards(LocalGuard)
   @Post('signin')
   async signin(
     @Req() req,
     @Body() body: SigninUserDto,
   ): Promise<SigninUserResponseDto> {
-    // console.log('auth controller signing in, user in request:');
-    // console.log(req.user);
     return this.authService.auth(req.user);
   }
 
@@ -42,5 +39,4 @@ export class AuthController {
   ): Promise<SignupUserResponseDto> {
     return this.usersService.create(createUserDto);
   }
-
 }

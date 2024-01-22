@@ -6,15 +6,12 @@ import {
   Param,
   Header,
   UseFilters,
-  UseInterceptors,
-  Res,
   Req,
   UseGuards,
 } from '@nestjs/common';
 import { OffersService } from './offers.service';
 import { CreateOfferDto } from './dto/create-offer.dto';
 import { OfferNotFoundExceptionFilter } from './filters/offer-not-found.filter';
-import { CacheInterceptor, CacheKey, CacheTTL } from '@nestjs/cache-manager';
 import { SkipThrottle } from '@nestjs/throttler';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtGuard } from 'src/guards/jwt.guard';
@@ -32,8 +29,6 @@ export class OffersController {
     return this.offersService.create(createOfferDto, req.user);
   }
 
-  @CacheKey('offers_findALl')
-  @CacheTTL(3600)
   @Header('Cache-Control', 'no-cache, max-age=3600')
   @Get()
   findAll() {

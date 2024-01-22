@@ -1,4 +1,4 @@
-import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateWishDto } from './dto/create-wish.dto';
@@ -32,13 +32,13 @@ export class WishesService {
     }
     copiedWish.copied = Number(+copiedWish.copied) + 1;
     const {
-      id: _,
-      raised,
-      owner,
-      offers,
-      createdAt,
-      updatedAt,
-      copied,
+      id: _id,
+      raised: _raised,
+      owner: _owner,
+      offers: _offers,
+      createdAt: _createdAt,
+      updatedAt: _updatedAt,
+      copied: _copied,
       ...newWishDto
     } = copiedWish;
     const wishWithUser = {
@@ -57,7 +57,6 @@ export class WishesService {
   }
 
   async findOne(id: number): Promise<Wish> {
-    // console.log(`wishes service find one by id: ${id}`);
     const wish = await this.wishRepository.findOne({
       where: {
         id,
@@ -120,7 +119,6 @@ export class WishesService {
   }
 
   async findByUser(user: User) {
-    // console.log(`wishes service find one by user: ${user.username}`);
     return this.wishRepository.find({
       where: {
         owner: {

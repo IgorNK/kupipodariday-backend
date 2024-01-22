@@ -4,12 +4,10 @@ import {
   Get,
   Post,
   Body,
-  Header,
   Patch,
   Param,
   Delete,
   UseFilters,
-  UseInterceptors,
   UseGuards,
 } from '@nestjs/common';
 import { JwtGuard } from '../guards/jwt.guard';
@@ -18,14 +16,12 @@ import { CreateWishDto } from './dto/create-wish.dto';
 import { UpdateWishDto } from './dto/update-wish.dto';
 import { Wish } from './entities/wish.entity';
 import { WishNotFoundExceptionFilter } from './filters/wish-not-found.filter';
-import { CacheInterceptor, CacheKey, CacheTTL } from '@nestjs/cache-manager';
 import { DeleteResult, UpdateResult } from 'typeorm';
-import { ApiTags, ApiResponse } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('wishes')
 @ApiTags('wishes')
 @UseFilters(WishNotFoundExceptionFilter)
-@UseInterceptors(CacheInterceptor)
 export class WishesController {
   constructor(private readonly wishesService: WishesService) {}
 
@@ -38,43 +34,29 @@ export class WishesController {
     return this.wishesService.create(createWishDto, req.user);
   }
 
-
-  @CacheKey('wishes_findAll')
-  @CacheTTL(3600)
-  @Header('Cache-Control', 'no-cache, max-age=3600')
   @Get()
   async findAll(): Promise<Wish[]> {
     return this.wishesService.findAll();
   }
 
-  @CacheKey('wishes_last')
-  @CacheTTL(3600)
-  @Header('Cache-Control', 'no-cache, max-age=3600')
   @Get('last')
   async findLast(): Promise<Wish[]> {
-    // console.log('Wishes controller find last');
     return this.wishesService.findLast(40);
   }
 
-  @CacheKey('wishes_top')
-  @CacheTTL(3600)
-  @Header('Cache-Control', 'no-cache, max-age=3600')
   @Get('top')
   async findTop(): Promise<Wish[]> {
-    // console.log('wishes controller find top');
     return this.wishesService.findTop(20);
   }
 
   @UseGuards(JwtGuard)
   @Post(':id/copy')
   async copy(@Req() req, @Param('id') id: number): Promise<Wish> {
-    // console.log(`wishes controller copy: ${id}`);
     return this.wishesService.copy(id, req.user);
   }
 
   @Get(':id')
   async findOne(@Param('id') id: number): Promise<Wish> {
-    // console.log(`wishes controller find one: ${id}`);
     return this.wishesService.findOne(id);
   }
 

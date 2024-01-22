@@ -7,7 +7,6 @@ import {
   JoinColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  ManyToMany,
 } from 'typeorm';
 import { Length, IsUrl, Min } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';

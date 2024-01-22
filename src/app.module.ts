@@ -3,7 +3,7 @@ import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { WinstonModule } from 'nest-winston';
 import * as winston from 'winston';
 import 'winston-daily-rotate-file';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { configuration, configSchema } from './app.configuration';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -52,7 +52,10 @@ import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
       imports: [ConfigModule],
       useFactory: () => getTypeOrmModuleOptions(),
     }),
-    CacheModule.register(),
+    CacheModule.register({
+      isGlobal: true,
+      ttl: 3600,
+    }),
     UsersModule,
     WishesModule,
     WishlistsModule,

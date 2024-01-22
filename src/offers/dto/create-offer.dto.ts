@@ -1,14 +1,9 @@
 import {
   IsNotEmpty,
-  IsString,
   IsNumber,
-  IsEmail,
-  IsUrl,
   IsBoolean,
-  IsDate,
   IsOptional,
   Min,
-  Length,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 

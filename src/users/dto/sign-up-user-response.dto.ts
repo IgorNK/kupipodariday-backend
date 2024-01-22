@@ -5,7 +5,6 @@ import {
   IsEmail,
   IsUrl,
   IsDate,
-  IsOptional,
   Length,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
