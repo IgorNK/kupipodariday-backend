@@ -1,4 +1,8 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateWishDto } from './dto/create-wish.dto';
@@ -29,6 +33,9 @@ export class WishesService {
     const copiedWish: Wish = await this.findOne(id);
     if (!copiedWish) {
       throw new WishNotFoundException();
+    }
+    if (copiedWish.owner.id === user.id) {
+      throw new BadRequestException('Wish is already owned.');
     }
     copiedWish.copied = Number(+copiedWish.copied) + 1;
     const {
