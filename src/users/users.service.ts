@@ -94,18 +94,27 @@ export class UsersService {
       const hashedPassword = await bcrypt.hash(password, salt);
       updateUserDto.password = hashedPassword;
     }
-    const updatedUser = await this.userRepository.save({
-      id,
-      ...updateUserDto,
-    });
-    const {
-      password: _password,
-      wishes: _wishes,
-      offers: _offers,
-      wishlists: _wishlists,
-      ...rest
-    } = updatedUser;
-    return rest;
+    try {
+      const updatedUser = await this.userRepository.save({
+        id,
+        ...updateUserDto,
+      });
+      const {
+        password: _password,
+        wishes: _wishes,
+        offers: _offers,
+        wishlists: _wishlists,
+        ...rest
+      } = updatedUser;
+      return rest;
+    } catch (error) {
+      if (error instanceof QueryFailedError) {
+        const err = error.driverError as DatabaseError;
+        if (err.code === '23505') {
+          throw new ConflictException('username or email already exists');
+        }
+      }
+    }
   }
 
   async removeOne(id: number): Promise<DeleteResult> {

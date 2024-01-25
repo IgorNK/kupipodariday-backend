@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { CreateOfferDto } from './dto/create-offer.dto';
 import { Offer } from './entities/offer.entity';
-import { DeleteResult, Repository } from 'typeorm';
+import { DataSource, DeleteResult, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OfferNotFoundException } from './exceptions/offer-not-found.exception';
 import User from 'src/users/entities/user.entity';
@@ -18,6 +18,7 @@ export class OffersService {
     private readonly offerRepository: Repository<Offer>,
     @InjectRepository(Wish)
     private readonly wishRepository: Repository<Wish>,
+    private readonly dataSource: DataSource,
   ) {}
 
   async create(createOfferDto: CreateOfferDto, user: User): Promise<Offer> {
@@ -61,9 +62,22 @@ export class OffersService {
     };
 
     wish.raised = Number(+wish.raised) + createOfferDto.amount;
-    const offer = this.offerRepository.create(offerWithUser);
-    await this.wishRepository.save(wish);
-    return this.offerRepository.save(offer);
+
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    let returnedOffer: Offer;
+    try {
+      const offer = this.offerRepository.create(offerWithUser);
+      await queryRunner.manager.save(wish);
+      returnedOffer = await queryRunner.manager.save(offer);
+      await queryRunner.commitTransaction();
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+      return returnedOffer;
+    }
   }
 
   async findAll(): Promise<Offer[]> {
