@@ -6,11 +6,11 @@ import { join } from 'path';
 export const getTypeOrmModuleOptions = (): TypeOrmModuleOptions => {
   return {
     type: 'postgres',
-    host: process.env['DB_HOST'],
-    port: parseInt(process.env['DB_PORT']),
-    username: process.env['DB_USERNAME'],
-    password: process.env['DB_PASSWORD'],
-    database: process.env['DB_NAME'],
+    host: process.env['POSTGRES_HOST'] || "localhost",
+    port: parseInt(process.env['POSTGRES_PORT']) || 5432,
+    username: process.env['POSTGRES_USER'] || "kpduser",
+    password: process.env['POSTGRES_PASSWORD'] || "super_strong_postgres_password",
+    database: process.env['POSTGRES_DB'] || "kupipodariday",
     // entities: ['src/**/entities/*.entity{.ts,.js}'],
     entities: [
       join(__dirname, '/../dist/src/users/entities/*.entity{.d.ts,.js}'),
@@ -26,18 +26,18 @@ export const getTypeOrmModuleOptions = (): TypeOrmModuleOptions => {
     //   __dirname + '/src/users/entities/user.entity.ts',
     //   __dirname + '/src/users/entities/user.entity.js',
     // ],
-    synchronize: false,
+    synchronize: true,
     logging: true,
   };
 };
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
-  host: process.env['DB_HOST'],
-  port: parseInt(process.env['DB_PORT']),
-  username: process.env['DB_USERNAME'],
-  password: process.env['DB_PASSWORD'],
-  database: process.env['DB_NAME'],
+  host: process.env['POSTGRES_HOST'] || "localhost",
+  port: parseInt(process.env['POSTGRES_PORT']) || 5432,
+  username: process.env['POSTGRES_USER'] || "kpduser",
+  password: process.env['POSTGRES_PASSWORD'] || "super_strong_postgres_password",
+  database: process.env['POSTGRES_DB'] || "kupipodariday",
   // entities: [
   //   join(__dirname, '/../dist/src/users/entities/*.entity{.d.ts,.js}'),
   //   join(__dirname, '/../dist/src/wishes/entities/*.entity{.d.ts,.js}'),
@@ -54,5 +54,5 @@ export const AppDataSource = new DataSource({
   // ],
   migrations: ['src/database/migrations/*.ts'],
   // migrations: [join(__dirname, '/../src/database/migrations/*.ts')],
-  synchronize: false,
+  synchronize: true,
 });

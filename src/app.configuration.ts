@@ -6,13 +6,13 @@ export const configuration = () => ({
   jwt_expiration: parseInt(process.env.JWT_EXPIRATION, 10) || 60 * 60 * 24 * 7,
   database: {
     type: 'postgres',
-    host: process.env.POSTGRES_HOST,
-    database: process.env.POSTGRES_DB,
-    username: process.env.POSTGRES_USER,
-    password: process.env.POSTGRES_PASSWORD,
+    host: process.env.POSTGRES_HOST || "localhost",
+    database: process.env.POSTGRES_DB || "kupipodariday",
+    username: process.env.POSTGRES_USER || "kpduser",
+    password: process.env.POSTGRES_PASSWORD || "super_strong_postgres_password",
     port: parseInt(process.env.POSTGRES_PORT, 10) || 5432,
     entities: ['src/**/entities/*.entity{.ts,.js'],
-    synchronize: false,
+    synchronize: true,
     logging: false,
   },
 });
