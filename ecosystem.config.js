@@ -1,7 +1,7 @@
 module.exports = {
   apps : [{
-    name: 'api-service',
-    script: './dist/main.js',
+    name: 'kpd-backend-service',
+    script: './dist/src/main.js',
     env: {
 	    NODE_ENV: "development"
     },
